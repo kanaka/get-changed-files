@@ -2119,13 +2119,14 @@ function run() {
                     core.setFailed(`This action only supports pull requests and pushes, ${github_1.context.eventName} events are not supported. ` +
                         "Please submit an issue on this action's GitHub repo if you believe this in correct.");
             }
+            core.info(`Original base commit: ${base}`);
             if (base && base.startsWith('000000000000000000000')) {
                 // TODO: This almost certainly isn't right and won't work for
                 // older "master"-based repos. The URL
                 // https://github.com/OWNER/REOP/compare/BRANCH seems to do the
                 // right thing but the CompareCommits API doesn't has
                 // a mandatory base argument
-                base = "main";
+                base = 'main';
             }
             // Log the base and head commits
             core.info(`Base commit: ${base}`);

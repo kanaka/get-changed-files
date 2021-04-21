@@ -41,6 +41,7 @@ async function run(): Promise<void> {
         )
     }
 
+    core.info(`Original base commit: ${base}`)
     if (base && base.startsWith('000000000000000000000')) {
       // TODO: This almost certainly isn't right and won't work for
       // older "master"-based repos. The URL
