@@ -9,6 +9,7 @@ async function run(): Promise<void> {
     // Create GitHub client with the API token.
     const client = new GitHub(core.getInput('token', {required: true}))
     const format = core.getInput('format', {required: true}) as Format
+    const defaultBase = core.getInput('default_base')
 
     // Ensure that the format parameter is set properly.
     if (format !== 'space-delimited' && format !== 'csv' && format !== 'json') {
@@ -43,12 +44,8 @@ async function run(): Promise<void> {
 
     core.info(`Original base commit: ${base}`)
     if (base && base.startsWith('000000000000000000000')) {
-      // TODO: This almost certainly isn't right and won't work for
-      // older "master"-based repos. The URL
-      // https://github.com/OWNER/REOP/compare/BRANCH seems to do the
-      // right thing but the CompareCommits API doesn't has
-      // a mandatory base argument
-      base = 'main'
+      // If this is a new branch, then use defaultBase input
+      base = defaultBase
     }
 
     // Log the base and head commits
