@@ -20,7 +20,7 @@ inputs:
       Can be 'space-delimited', 'csv', or 'json'.
     required: true
     default: space-delimited
-  default_base:
+  default-base:
     description: >
       Base branch to use when changes are on
       a new branch.
