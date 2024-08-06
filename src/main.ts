@@ -10,6 +10,7 @@ async function run(): Promise<void> {
     const client = new GitHub(core.getInput('token', {required: true}))
     const format = core.getInput('format', {required: true}) as Format
     const defaultBase = core.getInput('default-base')
+    core.info(`User input defaultBase: ${defaultBase}`)
 
     // Ensure that the format parameter is set properly.
     if (format !== 'space-delimited' && format !== 'csv' && format !== 'json') {
@@ -45,6 +46,7 @@ async function run(): Promise<void> {
     core.info(`Original base commit: ${base}`)
     if (base && base.startsWith('000000000000000000000')) {
       // If this is a new branch, then use defaultBase input
+      core.info(`Switching base from ${base} to ${defaultBase}`)
       base = defaultBase
     }
 
