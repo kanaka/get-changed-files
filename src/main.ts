@@ -1,13 +1,14 @@
 import * as core from '@actions/core'
-import {context, GitHub} from '@actions/github'
+import {context, getOctokit} from '@actions/github'
+import {Octokit} from '@octokit/rest'
 
 type Format = 'space-delimited' | 'csv' | 'json'
 type FileStatus = 'added' | 'modified' | 'removed' | 'renamed'
 
 async function run(): Promise<void> {
   try {
-    // Create GitHub client with the API token.
-    const client = new GitHub(core.getInput('token', {required: true}))
+    // Create Octokit client with the API token.
+    const client = getOctokit(core.getInput('token', {required: true}))
     const format = core.getInput('format', {required: true}) as Format
     const defaultBase = core.getInput('default-base')
     core.info(`User input defaultBase: ${defaultBase}`)
@@ -68,7 +69,7 @@ async function run(): Promise<void> {
 
     // Use GitHub's compare two commits API.
     // https://developer.github.com/v3/repos/commits/#compare-two-commits
-    const response = await client.repos.compareCommits({
+    const response = await client.rest.repos.compareCommits({
       base,
       head,
       owner: context.repo.owner,
@@ -98,7 +99,7 @@ async function run(): Promise<void> {
       removed = [] as string[],
       renamed = [] as string[],
       addedModified = [] as string[]
-    for (const file of files) {
+    for (const file of files || []) {
       const filename = file.filename
       // If we're using the 'space-delimited' format and any of the filenames have a space in them,
       // then fail the step.
@@ -191,7 +192,7 @@ async function run(): Promise<void> {
     // For backwards-compatibility
     core.setOutput('deleted', removedFormatted)
   } catch (error) {
-    core.setFailed(error.message)
+    core.setFailed((error as Error).message)
   }
 }
 
